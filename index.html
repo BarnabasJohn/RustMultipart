@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>actix multipart demo</title>
+    </head>
+    <body>
+        <h1>actix mulitpart demo</h1>
+        <div>
+            <form id="form">
+                <label>Select an img: </label>
+                <p><input type="file" name="file_one" id="file_one" /></p>
+                <p><input type="file" name="file_two" id="file_two" /></p>
+                <p><input type="file" name="file_three" id="file_three" /></p>
+                <br />
+                <input type="submit" value ="upload" />
+            </form>
+        </div>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+        const form = document.querySelector("#form");
+        const file_one = document.querySelector("#file_one");
+        const file_two = document.querySelector("#file_two");
+        const file_three = document.querySelector("#file_three");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            /* The FormData interface provides a way to construct a set of
+               key/value pairs representing form fields and their values.
+               It uses the same format a form would use if the encoding
+               type were set to "multipart/form-data". -MDN */
+            const formData = new FormData();
+            formData.append("avatar", file_one.files[0]);
+            formData.append("avatar", file_two.files[0]);
+            formData.append("avatar", file_three.files[0]);
+            formData.append("avatar", "test");
+
+            axios({
+                method: "POST",
+                url: "http://localhost:8080/upload2",
+                data: formData,
+                /* An HTTP multipart request is an HTTP request that
+                   HTTP clients construct to send files and data over
+                   to an HTTP Server. It is commonly used by browsers
+                   and HTTP clients to upload files to the server.
+                   - https://stackoverflow.com/questions/16958448/
+                     what-is-http-multipart-request */
+                headers: { "Content-Type": "multipart/form-data" },
+            }).then(() => console.log("done"))
+              .catch((e) => console.error(e));
+        });
+        </script>
+    </body>
+</html>
